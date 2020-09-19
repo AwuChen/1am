@@ -541,7 +541,7 @@ public class ChatApp : MonoBehaviour
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.TimeOfDay + "," + System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
 
         NetworkManager.instance.SaveChat(data);
     }
@@ -555,7 +555,7 @@ public class ChatApp : MonoBehaviour
         //hash table <key, value>
         Dictionary<string, string> data = new Dictionary<string, string>();
 
-        data["timeStamp"] = System.DateTime.Now.TimeOfDay + "," + System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
 
         NetworkManager.instance.UpdateChat(data);
     }

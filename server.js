@@ -24,7 +24,7 @@ var currentUserMSG =[];
 io.on('connection', function(socket){
 
    //print a log in node.js command prompt
-  console.log('A user ready for connection!');
+  console.log('A user ready for connection!!');
   
   //to store current client connection
   var currentUser;
@@ -164,7 +164,7 @@ io.on('connection', function(socket){
 		message:data.msg,
 		timeStamp:data.timeStamp
 	  })
-	   
+	   console.log("SAVED into array" + " -msg: " + data.msg + " -time: " + data.timeStamp);
 	});//END_SOCKET_ON
 
 
@@ -176,11 +176,13 @@ io.on('connection', function(socket){
 	  
 	  for (var i = 0; i < currentUserMSG.length; i++)
 	  {
+	  	console.log("saved timestamp: " + currentUserMSG[i].timeStamp + " - updated timestamp: " + data.timeStamp);
 	  	// if update timestamp == saved timestamp 
 	  	if(data.timeStamp == currentUserMSG[i].timeStamp)
 	  	{
 	   		// send message through 
        		socket.broadcast.emit('SEND_CHAT', currentUserMSG[i].message);
+       		console.log('time stamp MATCHED!');
        	}
 	  }
        
