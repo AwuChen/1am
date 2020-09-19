@@ -67,6 +67,7 @@ public class NetworkManager : MonoBehaviour {
 
     public GameObject[] interactiveSpace;
     public GM gManager;
+    public ChatApp chatApp;
     void Awake()
 	{
 		Application.ExternalEval("socket.isReady = true;");
@@ -451,13 +452,33 @@ public class NetworkManager : MonoBehaviour {
 		Application.ExternalCall("socket.emit", "MOVE_AND_ROTATE",new JSONObject(data));
     }
 
+    // save chat 
+    public void SaveChat(Dictionary<string, string> data)
+    {
+
+        JSONObject jo = new JSONObject(data);
+
+        //sends to the nodejs server through socket the json package
+        Application.ExternalCall("socket.emit", "SAVE_CHAT", new JSONObject(data));
+    }
+
+    // update chat 
+    public void UpdateChat(Dictionary<string, string> data)
+    {
+
+        JSONObject jo = new JSONObject(data);
+
+        //sends to the nodejs server through socket the json package
+        Application.ExternalCall("socket.emit", "UPDATE_CHAT", new JSONObject(data));
+    }
 
 
-	/// <summary>
-	/// Update the network player position and rotation to local player.
-	/// </summary>
-	/// <param name="_msg">Message.</param>
-	void OnUpdateMoveAndRotate(string data)
+
+    /// <summary>
+    /// Update the network player position and rotation to local player.
+    /// </summary>
+    /// <param name="_msg">Message.</param>
+    void OnUpdateMoveAndRotate(string data)
 	{
 		/*
 		 * data.pack[0] = id (network player id)
@@ -499,8 +520,11 @@ public class NetworkManager : MonoBehaviour {
 
             Debug.Log("Update Player Pos & Rot");
         }
-        
+    }
 
+    void OnUpdateChat(string data)
+    {
+        chatApp.ReceiveIncommingMessage(data);
     }
 
     public void UpdateInteract(int intCount)

@@ -17,6 +17,8 @@ var clients			= [];// to storage clients
 var clientLookup = {};// clients search engine
 var sockets = {};//// to storage sockets
 // have the array here 
+var currentUserMSG =[];
+
 
 //open a connection with the specific client
 io.on('connection', function(socket){
@@ -151,6 +153,39 @@ io.on('connection', function(socket){
       console.log('[INFO] currentUser.moji '+currentUser.moji);
        }
 	});//END_SOCKET_ON
+
+	//create a callback fuction to listening SaveChat() method in NetworkMannager.cs unity script
+	socket.on('SAVE_CHAT', function (_data)
+	{
+     
+	  var data = JSON.parse(_data);	
+	  
+	  currentUserMSG.push({
+		message:data.msg,
+		timeStamp:data.timeStamp
+	  })
+	   
+	});//END_SOCKET_ON
+
+
+	//create a callback fuction to listening EmitMoveAndRotate() method in NetworkMannager.cs unity script
+	socket.on('UPDATE_CHAT', function (_data)
+	{
+     
+	  var data = JSON.parse(_data);	
+	  
+	  for (var i = 0; i < currentUserMSG.length; i++)
+	  {
+	  	// if update timestamp == saved timestamp 
+	  	if(data.timeStamp == currentUserMSG[i].timeStamp)
+	  	{
+	   		// send message through 
+       		socket.broadcast.emit('SEND_CHAT', currentUserMSG[i].message);
+       	}
+	  }
+       
+	});//END_SOCKET_ON
+
 	
 	//create a callback fuction to listening GetHistory() method in NetworkMannager.cs unity script
 	socket.on('GET_HISTORY', function (_pack)
