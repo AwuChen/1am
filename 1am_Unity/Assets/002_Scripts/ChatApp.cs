@@ -371,7 +371,7 @@ public class ChatApp : MonoBehaviour
         if (mIsServer)
         {
             //we use the server side connection id to identify the client
-            string idAndMessage = evt.ConnectionId + ":" + msg;
+            string idAndMessage = msg;
             SendString(idAndMessage);
             Append(idAndMessage);
         }
