@@ -32,9 +32,12 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-public class ClickAndGetImage : MonoBehaviour {
+public class ClickAndGetImage : MonoBehaviour
+{
+    public ChatApp cApp;
+    string picUrl;
 
-    public void OnPic()
+    public void OnMouseOver()
     {
 
         // NOTE: gameObject.name MUST BE UNIQUE!!!!
@@ -56,6 +59,7 @@ public class ClickAndGetImage : MonoBehaviour {
                 Renderer renderer = GetComponent<Renderer>();
 
                 renderer.material.mainTexture = tex;
+                picUrl = dataUrl;
             }
             else
             {
@@ -65,6 +69,19 @@ public class ClickAndGetImage : MonoBehaviour {
         else
         {
             Debug.LogError("Error getting image:" + dataUrl);
+        }
+    }
+
+    public void SendPic()
+    {
+        if (picUrl != null)
+        {
+            // send this into chat 
+            cApp.SendString(picUrl);
+        }
+        else
+        {
+            Debug.Log("cannot send pic");
         }
     }
 }

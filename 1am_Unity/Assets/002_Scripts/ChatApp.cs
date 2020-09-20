@@ -125,6 +125,7 @@ public class ChatApp : MonoBehaviour
     string dateTime;
     string timeCode;
 
+    public ClickAndGetImage ClickPic;
     /// <summary>
     /// Will setup webrtc and create the network object
     /// </summary>
@@ -364,6 +365,8 @@ public class ChatApp : MonoBehaviour
 
         string msg = Encoding.UTF8.GetString(buffer.Buffer, 0, buffer.ContentLength);
 
+        string s_dataUrlPrefix = "data:image/png;base64,";
+
         //if server -> forward the message to everyone else including the sender
         if (mIsServer)
         {
@@ -374,9 +377,19 @@ public class ChatApp : MonoBehaviour
         }
         else
         {
-            //client received a message from the server -> simply print
-            //if message received 
-            Append(msg);
+            //check for pic 
+
+            if (msg.StartsWith(s_dataUrlPrefix))
+            {
+                ClickPic.ReceiveImage(msg);
+            }
+            else
+            {
+                //client received a message from the server -> simply print
+                //if message received 
+                Append(msg);
+            }
+
         }
 
         //return the buffer so the network can reuse it
@@ -395,7 +408,7 @@ public class ChatApp : MonoBehaviour
     /// </summary>
     /// <param name="msg">String containing the message to send</param>
     /// <param name="reliable">false to use unreliable messages / true to use reliable messages</param>
-    private void SendString(string msg, bool reliable = true)
+    public void SendString(string msg, bool reliable = true)
     {
         if (mNetwork == null || mConnections.Count == 0)
         {
