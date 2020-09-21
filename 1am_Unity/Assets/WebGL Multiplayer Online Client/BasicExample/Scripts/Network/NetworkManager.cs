@@ -472,6 +472,14 @@ public class NetworkManager : MonoBehaviour {
         Application.ExternalCall("socket.emit", "UPDATE_CHAT", new JSONObject(data));
     }
 
+    // demo chat 
+    public void DemoChat()
+    {
+        
+        //sends to the nodejs server through socket the json package
+        Application.ExternalCall("socket.emit", "DEMO_CHAT");
+    }
+
 
 
     /// <summary>

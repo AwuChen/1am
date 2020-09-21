@@ -141,7 +141,9 @@ public class ChatApp : MonoBehaviour
         Append("1AM Loading...");
         UnityCallFactory.EnsureInit(OnCallFactoryReady, OnCallFactoryFailed);
 
-        InvokeRepeating("UpdateMessage", 2.0f, 30f);
+        InvokeRepeating("UpdateMessage", 2.0f, 5f);
+
+        NetworkManager.instance.DemoChat();
     }
 
     /// <summary>
@@ -533,7 +535,7 @@ public class ChatApp : MonoBehaviour
         if(mIsServer)
         {
             //the server has the authority thus -> we can print it directly adding the 0 as server id
-            msg = "0:" + msg;
+            //msg = "0:" + msg;
             Append(msg);
             SendString(msg);
         }

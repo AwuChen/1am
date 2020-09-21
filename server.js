@@ -167,6 +167,28 @@ io.on('connection', function(socket){
 	   console.log("SAVED into array" + " -msg: " + data.msg + " -time: " + data.timeStamp);
 	});//END_SOCKET_ON
 
+	//create a callback fuction to listening SaveChat() method in NetworkMannager.cs unity script
+	socket.on('DEMO_CHAT', function (_data)
+	{
+     
+	  var data = JSON.parse(_data);	
+	  
+	  currentUserMSG.push({
+		message:"Yoho, I just woke up ~ test msg at 17,40",
+		timeStamp:"17,50"
+	  })
+	  currentUserMSG.push({
+		message:"Missing you ~test msg at 17,42",
+		timeStamp:"17,52"
+	  })
+	  currentUserMSG.push({
+		message:"Goodbye ~test msg at 17,43",
+		timeStamp:"17,53"
+	  })
+		console.log("DEMO Started");
+	  
+	});//END_SOCKET_ON
+
 
 	//create a callback fuction to listening EmitMoveAndRotate() method in NetworkMannager.cs unity script
 	socket.on('UPDATE_CHAT', function (_data)
