@@ -168,22 +168,12 @@ io.on('connection', function(socket){
 	});//END_SOCKET_ON
 
 	//create a callback fuction to listening SaveChat() method in NetworkMannager.cs unity script
-	socket.on('DEMO_CHAT', function (_data)
+	socket.on('DEMO_CHAT', function ()
 	{
-     
-	  var data = JSON.parse(_data);	
-	  
+
 	  currentUserMSG.push({
-		message:"Yoho, I just woke up ~ test msg at 17,40",
-		timeStamp:"17,50"
-	  })
-	  currentUserMSG.push({
-		message:"Missing you ~test msg at 17,42",
-		timeStamp:"17,52"
-	  })
-	  currentUserMSG.push({
-		message:"Goodbye ~test msg at 17,43",
-		timeStamp:"17,53"
+		message:"Yoho, I just woke up ~ test msg at 17,59",
+		timeStamp:"18,05"
 	  })
 		console.log("DEMO Started");
 	  
