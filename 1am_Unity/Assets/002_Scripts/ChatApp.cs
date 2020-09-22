@@ -126,6 +126,9 @@ public class ChatApp : MonoBehaviour
     string timeCode;
 
     public ClickAndGetImage ClickPic;
+    public InputField demoText;
+    public InputField demoHr;
+    public InputField demoMin;
     /// <summary>
     /// Will setup webrtc and create the network object
     /// </summary>
@@ -143,7 +146,7 @@ public class ChatApp : MonoBehaviour
 
         InvokeRepeating("UpdateMessage", 2.0f, 5f);
 
-        NetworkManager.instance.DemoChat();
+        //NetworkManager.instance.DemoChat();
     }
 
     /// <summary>
@@ -400,7 +403,18 @@ public class ChatApp : MonoBehaviour
 
     public void ReceiveIncommingMessage(string msg)
     {
-        Append("1am message delivered: " + msg);
+        //Append("1am message delivered: " + msg);
+        string s_dataUrlPrefix = "data:image/png;base64,";
+        // if photo ... 
+        if (msg.StartsWith(s_dataUrlPrefix))
+        {
+            ClickPic.ReceiveImage(msg);
+        }
+        else
+        {
+            Append("1am message delivered: " + msg);
+        }
+
     }
 
 
@@ -412,18 +426,25 @@ public class ChatApp : MonoBehaviour
     /// <param name="reliable">false to use unreliable messages / true to use reliable messages</param>
     public void SendString(string msg, bool reliable = true)
     {
-        if (mNetwork == null || mConnections.Count == 0)
-        {
-            Append("No connection. Can't send message.");
-        }
-        else
-        {
-            byte[] msgData = Encoding.UTF8.GetBytes(msg);
-            foreach (ConnectionId id in mConnections)
-            {
-                mNetwork.SendData(id, msgData, 0, msgData.Length, reliable);
-            }
-        }
+        //if (mNetwork == null || mConnections.Count == 0)
+        //{
+        //    Append("No connection. Can't send message.");
+        //}
+        //else
+        //{
+        //    byte[] msgData = Encoding.UTF8.GetBytes(msg);
+        //    foreach (ConnectionId id in mConnections)
+        //    {
+        //        mNetwork.SendData(id, msgData, 0, msgData.Length, reliable);
+        //    }
+        //}
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data["msg"] = msg;
+
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+
+        NetworkManager.instance.SaveChat(data);
     }
 
 
@@ -449,12 +470,12 @@ public class ChatApp : MonoBehaviour
     /// <param name="showSetup">true = user is connected. false = user isn't connected</param>
     private void SetGuiState(bool showSetup)
     {
-        uJoin.interactable = showSetup;
-        uOpenRoom.interactable = showSetup;
+        //uJoin.interactable = showSetup;
+        //uOpenRoom.interactable = showSetup;
 
-        uSend.interactable = !showSetup;
-        uLeave.interactable = !showSetup;
-        uMessageInput.interactable = !showSetup;
+        //uSend.interactable = !showSetup;
+        //uLeave.interactable = !showSetup;
+        //uMessageInput.interactable = !showSetup;
     }
 
     /// <summary>
@@ -509,41 +530,42 @@ public class ChatApp : MonoBehaviour
     /// </summary>
     public void SendButtonPressed()
     {
-        if (NetworkManager.instance == null)
-        {
-            Debug.Log("NetworkManager is null");
-        }
+        //if (NetworkManager.instance == null)
+        //{
+        //    Debug.Log("NetworkManager is null");
+        //}
 
 
-        //get the message written into the text field
+        ////get the message written into the text field
         string msg = uMessageInput.text;
 
-        if (msg.StartsWith("/disconnect"))
-        {
-            string[] slt = msg.Split(' ');
-            if(slt.Length >= 2)
-            {
-                ConnectionId conId;
-                if (short.TryParse(slt[1], out conId.id))
-                {
-                    mNetwork.Disconnect(conId);
-                }
-            }
-        }
+        //if (msg.StartsWith("/disconnect"))
+        //{
+        //    string[] slt = msg.Split(' ');
+        //    if(slt.Length >= 2)
+        //    {
+        //        ConnectionId conId;
+        //        if (short.TryParse(slt[1], out conId.id))
+        //        {
+        //            mNetwork.Disconnect(conId);
+        //        }
+        //    }
+        //}
 
-        //if we are the server -> add 0 in front as the server id
-        if(mIsServer)
-        {
-            //the server has the authority thus -> we can print it directly adding the 0 as server id
-            //msg = "0:" + msg;
-            Append(msg);
-            SendString(msg);
-        }
-        else
-        {
-            //clients just send it directly to the server. the server will decide what to do with it
-            SendString(msg);
-        }
+        ////if we are the server -> add 0 in front as the server id
+        //if(mIsServer)
+        //{
+        //    //the server has the authority thus -> we can print it directly adding the 0 as server id
+        //    //msg = "0:" + msg;
+        //    Append(msg);
+        //    SendString(msg);
+        //}
+        //else
+        //{
+        //    //clients just send it directly to the server. the server will decide what to do with it
+        //    SendString(msg);
+        //}
+        Append(msg);
         uMessageInput.text = "";
 
         //make sure the text box is in focus again so the user can continue typing without clicking it again
@@ -574,5 +596,22 @@ public class ChatApp : MonoBehaviour
 
         NetworkManager.instance.UpdateChat(data);
     }
+
+    public void DemoMessage()
+    {
+        if (NetworkManager.instance == null)
+        {
+            Debug.Log("NetworkManager is null");
+        }
+        //hash table <key, value>
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data["msg"] = demoText.text;
+        data["timeStamp"] = demoHr.text + "," + demoMin.text;
+
+        NetworkManager.instance.SaveChat(data);
+        Append("Demo Saved: " + demoText.text + " (" + demoHr.text + ":" + demoMin.text + ")");
+    }
+
     #endregion
 }
