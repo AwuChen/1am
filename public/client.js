@@ -49,6 +49,12 @@ window.addEventListener('load', function() {
 		gameInstance.SendMessage ('NetworkManager', 'OnUpdateChat',currentUserAtr);
 		//execInUnity('Update_messages', currentUser);
 	});
+
+	socket.on('DOUBLECHECK_CHAT', function(message) {
+	     var currentUserAtr = message;
+		gameInstance.SendMessage ('NetworkManager', 'OnDoubleCheck',currentUserAtr);
+		//execInUnity('Update_messages', currentUser);
+	});
 	
 	socket.on('REPLAY', function(id,position,rotation) {
 	     var currentUserAtr = id+','+position+','+rotation;

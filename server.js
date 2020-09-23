@@ -195,6 +195,10 @@ io.on('connection', function(socket){
 	   		// send message through 
        		socket.broadcast.emit('SEND_CHAT', currentUserMSG[i].message);
        		console.log('time stamp MATCHED!');
+       	}else{
+       		// send message through 
+       		//socket.broadcast.emit('DOUBLECHECK_CHAT', data.timeStamp);
+       		console.log('time stamp DOUBLECHECK');
        	}
 	  }
        

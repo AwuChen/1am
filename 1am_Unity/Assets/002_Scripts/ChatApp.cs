@@ -128,11 +128,13 @@ public class ChatApp : MonoBehaviour
     public ClickAndGetImage ClickPic;
     public InputField demoText;
     public InputField demoHr;
+    public InputField demoMin;
     public InputField demoAddress;
     public GameObject demo;
     public InputField address;
     List<string> previousMsg;
     List<string> previousImg;
+    bool runOnce = false;
     
     /// <summary>
     /// Will setup webrtc and create the network object
@@ -149,8 +151,6 @@ public class ChatApp : MonoBehaviour
         Append("1'AM your message delivery service");
         UnityCallFactory.EnsureInit(OnCallFactoryReady, OnCallFactoryFailed);
 
-        InvokeRepeating("UpdateMessage", 2.0f, 15f);
-
         //NetworkManager.instance.DemoChat();
     }
 
@@ -159,6 +159,13 @@ public class ChatApp : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             demo.SetActive(!demo.activeSelf);
+        }
+
+        if(System.DateTime.Now.Second == 0 && !runOnce)
+        {
+            Debug.Log("start timer");
+            InvokeRepeating("UpdateMessage", 0f, 60f);
+            runOnce = true;
         }
     }
     /// <summary>
@@ -425,7 +432,7 @@ public class ChatApp : MonoBehaviour
         }
         else 
         {
-            Append("message delivered: " + msg);
+            Append("msg delivered: " + msg);
         }
 
     }
@@ -455,14 +462,14 @@ public class ChatApp : MonoBehaviour
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
 
         NetworkManager.instance.SaveChat(data);
         if(address.text == "")
         {
             address.text = "recipient";
         }
-        Append("photo (deliver to: " + address.text + " at: "  + System.DateTime.Now.Hour + " o'clock)");
+        Append("photo (deliver to: " + address.text + " at "  + System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute +")");
     }
 
 
@@ -588,7 +595,7 @@ public class ChatApp : MonoBehaviour
         {
             address.text = "recipient";
         }
-        Append(msg + " (deliver to: " + address.text + " at: " + System.DateTime.Now.Hour + " o'clock)");
+        Append(msg + " (deliver to: " + address.text + " at " + System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute + ")");
         uMessageInput.text = "";
 
         //make sure the text box is in focus again so the user can continue typing without clicking it again
@@ -601,7 +608,7 @@ public class ChatApp : MonoBehaviour
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
 
         NetworkManager.instance.SaveChat(data);
     }
@@ -615,7 +622,21 @@ public class ChatApp : MonoBehaviour
         //hash table <key, value>
         Dictionary<string, string> data = new Dictionary<string, string>();
 
-        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+
+        NetworkManager.instance.UpdateChat(data);
+    }
+
+    public void DoubleCheckMessage(int hr, int min)
+    {
+        if (NetworkManager.instance == null)
+        {
+            Debug.Log("NetworkManager is null");
+        }
+        //hash table <key, value>
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data["timeStamp"] = hr + "," + min;
 
         NetworkManager.instance.UpdateChat(data);
     }
@@ -630,10 +651,10 @@ public class ChatApp : MonoBehaviour
         Dictionary<string, string> data = new Dictionary<string, string>();
 
         data["msg"] = demoText.text;
-        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
+        data["timeStamp"] = demoHr.text + "," + demoMin.text;
 
         NetworkManager.instance.SaveChat(data);
-        Append("Demo Saved: " + demoText.text + " (" + demoHr.text + "hr )");
+        Append("Demo Saved: " + demoText.text + " (" + demoHr.text + ":" + demoMin.text +")");
     }
 
     #endregion

@@ -472,6 +472,19 @@ public class NetworkManager : MonoBehaviour {
         Application.ExternalCall("socket.emit", "UPDATE_CHAT", new JSONObject(data));
     }
 
+    public void OnDoubleCheck(string data)
+    {
+        StartCoroutine(WaitForSeconds(data));
+    }
+
+    IEnumerator WaitForSeconds(string data)
+    {
+        var pack = data.Split(Delimiter);
+        //yield on a new YieldInstruction that waits for 5 seconds.
+        yield return new WaitForSeconds(30);
+        chatApp.DoubleCheckMessage(int.Parse(pack[1]), int.Parse(pack[2]));
+    }
+
     // demo chat 
     public void DemoChat()
     {
