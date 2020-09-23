@@ -128,11 +128,16 @@ public class ChatApp : MonoBehaviour
     public ClickAndGetImage ClickPic;
     public InputField demoText;
     public InputField demoHr;
-    public InputField demoMin;
+    public InputField demoAddress;
+    public GameObject demo;
+    public InputField address;
+    List<string> previousMsg;
+    List<string> previousImg;
+    
     /// <summary>
     /// Will setup webrtc and create the network object
     /// </summary>
-	private void Start ()
+    private void Start ()
     {
         dateTime = System.DateTime.Now.ToString();
         if (uOutput != null)
@@ -141,20 +146,27 @@ public class ChatApp : MonoBehaviour
             //every time it is opened
             uOutput.gameObject.SetActive(true);
         }
-        Append("1AM Loading...");
+        Append("1'AM your message delivery service");
         UnityCallFactory.EnsureInit(OnCallFactoryReady, OnCallFactoryFailed);
 
-        InvokeRepeating("UpdateMessage", 2.0f, 5f);
+        InvokeRepeating("UpdateMessage", 2.0f, 15f);
 
         //NetworkManager.instance.DemoChat();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            demo.SetActive(!demo.activeSelf);
+        }
+    }
     /// <summary>
     /// Called once the call factory is ready to be used.
     /// </summary>
     protected virtual void OnCallFactoryReady()
     {
-        Append("Current Time: " + dateTime);
+        Append("Ready for delivery");
         UnityCallFactory.Instance.RequestLogLevel(UnityCallFactory.LogLevel.Info);
     }
 
@@ -403,6 +415,7 @@ public class ChatApp : MonoBehaviour
 
     public void ReceiveIncommingMessage(string msg)
     {
+        
         //Append("1am message delivered: " + msg);
         string s_dataUrlPrefix = "data:image/png;base64,";
         // if photo ... 
@@ -410,9 +423,9 @@ public class ChatApp : MonoBehaviour
         {
             ClickPic.ReceiveImage(msg);
         }
-        else
+        else 
         {
-            Append("1am message delivered: " + msg);
+            Append("message delivered: " + msg);
         }
 
     }
@@ -442,9 +455,14 @@ public class ChatApp : MonoBehaviour
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
 
         NetworkManager.instance.SaveChat(data);
+        if(address.text == "")
+        {
+            address.text = "recipient";
+        }
+        Append("photo (deliver to: " + address.text + " at: "  + System.DateTime.Now.Hour + " o'clock)");
     }
 
 
@@ -565,7 +583,12 @@ public class ChatApp : MonoBehaviour
         //    //clients just send it directly to the server. the server will decide what to do with it
         //    SendString(msg);
         //}
-        Append(msg);
+        
+        if (address.text == "")
+        {
+            address.text = "recipient";
+        }
+        Append(msg + " (deliver to: " + address.text + " at: " + System.DateTime.Now.Hour + " o'clock)");
         uMessageInput.text = "";
 
         //make sure the text box is in focus again so the user can continue typing without clicking it again
@@ -578,7 +601,7 @@ public class ChatApp : MonoBehaviour
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
 
         NetworkManager.instance.SaveChat(data);
     }
@@ -592,7 +615,7 @@ public class ChatApp : MonoBehaviour
         //hash table <key, value>
         Dictionary<string, string> data = new Dictionary<string, string>();
 
-        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
 
         NetworkManager.instance.UpdateChat(data);
     }
@@ -607,10 +630,10 @@ public class ChatApp : MonoBehaviour
         Dictionary<string, string> data = new Dictionary<string, string>();
 
         data["msg"] = demoText.text;
-        data["timeStamp"] = demoHr.text + "," + demoMin.text;
+        data["timeStamp"] = System.DateTime.Now.Hour.ToString();
 
         NetworkManager.instance.SaveChat(data);
-        Append("Demo Saved: " + demoText.text + " (" + demoHr.text + ":" + demoMin.text + ")");
+        Append("Demo Saved: " + demoText.text + " (" + demoHr.text + "hr )");
     }
 
     #endregion

@@ -37,7 +37,7 @@ public class ClickAndGetImage : MonoBehaviour
     public ChatApp cApp;
     string picUrl;
 
-    public void OnMouseOver()
+    public void OnClick()
     {
 
         // NOTE: gameObject.name MUST BE UNIQUE!!!!

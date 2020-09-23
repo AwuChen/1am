@@ -172,8 +172,8 @@ io.on('connection', function(socket){
 	{
 
 	  currentUserMSG.push({
-		message:"Yoho, I just woke up ~ test msg at 17,59",
-		timeStamp:"18,05"
+		message:"Yoho, I just woke up ~ test msg at 18",
+		timeStamp:"18"
 	  })
 		console.log("DEMO Started");
 	  

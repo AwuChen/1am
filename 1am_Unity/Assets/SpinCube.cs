@@ -10,7 +10,7 @@ public class SpinCube : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        t.localEulerAngles = t.localEulerAngles + new Vector3(0, Time.deltaTime * 120.0f, 0);
+        t.localEulerAngles = t.localEulerAngles + new Vector3(0, Time.deltaTime * 60.0f, 0);
 	}
 
     Transform t;
