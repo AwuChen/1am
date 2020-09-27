@@ -132,6 +132,8 @@ public class ChatApp : MonoBehaviour
     public InputField demoAddress;
     public GameObject demo;
     public InputField address;
+    public InputField setHr;
+    public InputField setMin;
     List<string> previousMsg;
     List<string> previousImg;
     bool runOnce = false;
@@ -432,7 +434,7 @@ public class ChatApp : MonoBehaviour
         }
         else 
         {
-            Append("msg delivered: " + msg);
+            Append("msg received: " + msg);
         }
 
     }
@@ -458,18 +460,22 @@ public class ChatApp : MonoBehaviour
         //        mNetwork.SendData(id, msgData, 0, msgData.Length, reliable);
         //    }
         //}
+
+        if (setHr.text == "" || setMin.text == "")
+        {
+            setHr.text = System.DateTime.Now.Hour.ToString();
+            setMin.text = System.DateTime.Now.Minute.ToString();
+        }
+
         Dictionary<string, string> data = new Dictionary<string, string>();
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = setHr.text + "," + setMin.text;
 
         NetworkManager.instance.SaveChat(data);
-        if(address.text == "")
-        {
-            address.text = "recipient";
-        }
-        Append("photo (deliver to: " + address.text + " at "  + System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute +")");
+        
+        //Append("photo (deliver at: "  + setHr.text + ":" + setMin.text + ")");
     }
 
 
@@ -591,11 +597,12 @@ public class ChatApp : MonoBehaviour
         //    SendString(msg);
         //}
         
-        if (address.text == "")
+        if (setHr.text == "" || setMin.text == "")
         {
-            address.text = "recipient";
+            setHr.text = System.DateTime.Now.Hour.ToString();
+            setMin.text = System.DateTime.Now.Minute.ToString();
         }
-        Append(msg + " (deliver to: " + address.text + " at " + System.DateTime.Now.Hour + ":" + System.DateTime.Now.Minute + ")");
+        Append(msg + " (to be delivered at " + setHr.text + ":" + setMin.text + " local time)");
         uMessageInput.text = "";
 
         //make sure the text box is in focus again so the user can continue typing without clicking it again
@@ -608,7 +615,7 @@ public class ChatApp : MonoBehaviour
 
         data["msg"] = msg;
 
-        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+        data["timeStamp"] = setHr.text + "," + setMin.text;
 
         NetworkManager.instance.SaveChat(data);
     }
@@ -640,6 +647,7 @@ public class ChatApp : MonoBehaviour
 
         NetworkManager.instance.UpdateChat(data);
     }
+
 
     public void DemoMessage()
     {
