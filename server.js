@@ -18,6 +18,7 @@ var clientLookup = {};// clients search engine
 var sockets = {};//// to storage sockets
 // have the array here 
 var currentUserMSG =[];
+var currentUserPIC =[];
 
 
 //open a connection with the specific client
@@ -168,6 +169,19 @@ io.on('connection', function(socket){
 	});//END_SOCKET_ON
 
 	//create a callback fuction to listening SaveChat() method in NetworkMannager.cs unity script
+	socket.on('SAVE_PIC', function (_data)
+	{
+     
+	  var data = JSON.parse(_data);	
+	  
+	  currentUserPIC.push({
+		message:data.msg,
+		timeStamp:data.timeStamp
+	  })
+	   console.log("SAVED into array" + " -pic: " + data.msg + " -time: " + data.timeStamp);
+	});//END_SOCKET_ON
+
+	//create a callback fuction to listening SaveChat() method in NetworkMannager.cs unity script
 	socket.on('DEMO_CHAT', function ()
 	{
 
@@ -195,10 +209,31 @@ io.on('connection', function(socket){
 	   		// send message through 
        		socket.broadcast.emit('SEND_CHAT', currentUserMSG[i].message);
        		console.log('time stamp MATCHED!');
-       	}else{
-       		// send message through 
-       		//socket.broadcast.emit('DOUBLECHECK_CHAT', data.timeStamp);
-       		console.log('time stamp DOUBLECHECK');
+       	}else if(currentUserMSG.length > 1)
+	  	{
+	   		// send message through 
+       		socket.broadcast.emit('SEND_CHAT', currentUserMSG[i-1].message);
+       		console.log('time stamp MATCHED!');
+       	}
+	  }
+       
+	});//END_SOCKET_ON
+
+	//create a callback fuction to listening EmitMoveAndRotate() method in NetworkMannager.cs unity script
+	socket.on('UPDATE_PIC', function (_data)
+	{
+     
+	  var data = JSON.parse(_data);	
+	  
+	  for (var i = 0; i < currentUserPIC.length; i++)
+	  {
+	  	console.log("saved pic stamp: " + currentUserPIC[i].timeStamp + " - updated timestamp: " + data.timeStamp);
+	  	// if update timestamp == saved timestamp 
+	  	if(data.timeStamp == currentUserPIC[i].timeStamp)
+	  	{
+	   		// send message through 
+       		socket.broadcast.emit('SEND_PIC', currentUserPIC[i].message);
+       		console.log('time stamp MATCHED!');
        	}
 	  }
        

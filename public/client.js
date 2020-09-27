@@ -50,6 +50,12 @@ window.addEventListener('load', function() {
 		//execInUnity('Update_messages', currentUser);
 	});
 
+	socket.on('SEND_PIC', function(message) {
+	     var currentUserAtr = message;
+		gameInstance.SendMessage ('NetworkManager', 'OnUpdatePic',currentUserAtr);
+		//execInUnity('Update_messages', currentUser);
+	});
+
 	socket.on('DOUBLECHECK_CHAT', function(message) {
 	     var currentUserAtr = message;
 		gameInstance.SendMessage ('NetworkManager', 'OnDoubleCheck',currentUserAtr);

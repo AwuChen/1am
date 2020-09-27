@@ -77,7 +77,7 @@ public class ClickAndGetImage : MonoBehaviour
         if (picUrl != null)
         {
             // send this into chat 
-            cApp.SendString(picUrl);
+            cApp.SendPic(picUrl);
         }
         else
         {

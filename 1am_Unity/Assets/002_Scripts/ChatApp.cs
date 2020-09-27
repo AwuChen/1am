@@ -167,6 +167,7 @@ public class ChatApp : MonoBehaviour
         {
             Debug.Log("start timer");
             InvokeRepeating("UpdateMessage", 0f, 60f);
+            InvokeRepeating("UpdatePic", 0f, 60f);
             runOnce = true;
         }
     }
@@ -439,6 +440,19 @@ public class ChatApp : MonoBehaviour
 
     }
 
+    public void ReceiveIncommingPhoto(string msg)
+    {
+
+        //Append("1am message delivered: " + msg);
+        string s_dataUrlPrefix = "data:image/png;base64,";
+        // if photo ... 
+        if (msg.StartsWith(s_dataUrlPrefix))
+        {
+            ClickPic.ReceiveImage(msg);
+            Append("pic received");
+        }
+    }
+
 
 
     /// <summary>
@@ -466,6 +480,17 @@ public class ChatApp : MonoBehaviour
             setHr.text = System.DateTime.Now.Hour.ToString();
             setMin.text = System.DateTime.Now.Minute.ToString();
         }
+        if (setHr.text.StartsWith("0"))
+        {
+            string zero = "0";
+            setHr.text = setHr.text.Replace(zero, "");
+        }
+
+        if (setMin.text.StartsWith("0"))
+        {
+            string zero = "0";
+            setMin.text = setMin.text.Replace(zero, "");
+        }
 
         Dictionary<string, string> data = new Dictionary<string, string>();
 
@@ -478,10 +503,56 @@ public class ChatApp : MonoBehaviour
         //Append("photo (deliver at: "  + setHr.text + ":" + setMin.text + ")");
     }
 
+    /// <summary>
+    /// Sends a string as UTF8 byte array to all connections
+    /// </summary>
+    /// <param name="msg">String containing the message to send</param>
+    /// <param name="reliable">false to use unreliable messages / true to use reliable messages</param>
+    public void SendPic(string msg, bool reliable = true)
+    {
+        //if (mNetwork == null || mConnections.Count == 0)
+        //{
+        //    Append("No connection. Can't send message.");
+        //}
+        //else
+        //{
+        //    byte[] msgData = Encoding.UTF8.GetBytes(msg);
+        //    foreach (ConnectionId id in mConnections)
+        //    {
+        //        mNetwork.SendData(id, msgData, 0, msgData.Length, reliable);
+        //    }
+        //}
 
+        if (setHr.text == "" || setMin.text == "")
+        {
+            setHr.text = System.DateTime.Now.Hour.ToString();
+            setMin.text = System.DateTime.Now.Minute.ToString();
+        }
+        if (setHr.text.StartsWith("0"))
+        {
+            string zero = "0";
+            setHr.text = setHr.text.Replace(zero, "");
+        }
+
+        if (setMin.text.StartsWith("0"))
+        {
+            string zero = "0";
+            setMin.text = setMin.text.Replace(zero, "");
+        }
+
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data["msg"] = msg;
+
+        data["timeStamp"] = setHr.text + "," + setMin.text;
+
+        NetworkManager.instance.SavePic(data);
+
+        //Append("photo (deliver at: "  + setHr.text + ":" + setMin.text + ")");
+    }
 
     #region UI
-    
+
 
     /// <summary>
     /// Adds a new message to the message view
@@ -602,6 +673,19 @@ public class ChatApp : MonoBehaviour
             setHr.text = System.DateTime.Now.Hour.ToString();
             setMin.text = System.DateTime.Now.Minute.ToString();
         }
+
+        if (setHr.text.StartsWith("0"))
+        {
+            string zero = "0";
+            setHr.text = setHr.text.Replace(zero, "");
+        }
+
+        if (setMin.text.StartsWith("0"))
+        {
+            string zero = "0";
+            setMin.text = setMin.text.Replace(zero, "");
+        }
+
         Append(msg + " (to be delivered at " + setHr.text + ":" + setMin.text + " local time)");
         uMessageInput.text = "";
 
@@ -632,6 +716,20 @@ public class ChatApp : MonoBehaviour
         data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
 
         NetworkManager.instance.UpdateChat(data);
+    }
+
+    void UpdatePic()
+    {
+        if (NetworkManager.instance == null)
+        {
+            Debug.Log("NetworkManager is null");
+        }
+        //hash table <key, value>
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data["timeStamp"] = System.DateTime.Now.Hour + "," + System.DateTime.Now.Minute;
+
+        NetworkManager.instance.UpdatePic(data);
     }
 
     public void DoubleCheckMessage(int hr, int min)

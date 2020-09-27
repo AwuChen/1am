@@ -462,6 +462,15 @@ public class NetworkManager : MonoBehaviour {
         Application.ExternalCall("socket.emit", "SAVE_CHAT", new JSONObject(data));
     }
 
+    public void SavePic(Dictionary<string, string> data)
+    {
+
+        JSONObject jo = new JSONObject(data);
+
+        //sends to the nodejs server through socket the json package
+        Application.ExternalCall("socket.emit", "SAVE_PIC", new JSONObject(data));
+    }
+
     // update chat 
     public void UpdateChat(Dictionary<string, string> data)
     {
@@ -470,6 +479,15 @@ public class NetworkManager : MonoBehaviour {
 
         //sends to the nodejs server through socket the json package
         Application.ExternalCall("socket.emit", "UPDATE_CHAT", new JSONObject(data));
+    }
+
+    public void UpdatePic(Dictionary<string, string> data)
+    {
+
+        JSONObject jo = new JSONObject(data);
+
+        //sends to the nodejs server through socket the json package
+        Application.ExternalCall("socket.emit", "UPDATE_PIC", new JSONObject(data));
     }
 
     public void OnDoubleCheck(string data)
@@ -546,6 +564,11 @@ public class NetworkManager : MonoBehaviour {
     void OnUpdateChat(string data)
     {
         chatApp.ReceiveIncommingMessage(data);
+    }
+
+    void OnUpdatePic(string data)
+    {
+        chatApp.ReceiveIncommingPhoto(data);
     }
 
     public void UpdateInteract(int intCount)
