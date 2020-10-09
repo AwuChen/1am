@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>1'AM</title>
+    <title>1AM</title>
     <style>
       html {
         box-sizing: border-box;
@@ -100,13 +100,13 @@
   </body>
 
   <script src="Build/UnityLoader.js"></script>
-  	<script src="/socket.io/socket.io.js"></script>
-	<script src="client.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
   <script>
-  	//any js errors are handled like regular errors at this point
-	UnityLoader.Error.handler = function(e, t){
-	//do something with the error here if you wish.
-	}
+    //any js errors are handled like regular errors at this point
+  UnityLoader.Error.handler = function(e, t){
+  //do something with the error here if you wish.
+  }
   UnityLoader.compatibilityCheck=function(e,t,r){t();};
   var gameInstance = UnityLoader.instantiate("gameContainer", "Build/public.json", {onProgress: UnityProgress});
   function UnityProgress(gameInstance, progress) {
